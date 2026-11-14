@@ -1,0 +1,32 @@
+{
+    "layout": { "pos": 0, "type": "heading", "label": "Layout" },
+    "layout-placement": {
+        "pos": 1,
+        "type": "dropdown",
+        "label": "Which side the album art sits on",
+        "options": [
+            { "label": "Left (default)", "value": "left" },
+            { "label": "Right", "value": "right" }
+        ],
+        "attribute": "placement",
+        "attrType": "rics",
+        "default": 0
+    },
+    "look": { "pos": 2, "type": "heading", "label": "Look" },
+    "accent": {
+        "pos": 3,
+        "type": "textfield",
+        "label": "Accent colour (progress bar)",
+        "attribute": "accent",
+        "attrType": "rics",
+        "default": "#ff0033"
+    },
+    "album-cover-border-radius": {
+        "pos": 4,
+        "type": "textfield",
+        "label": "Border radius of the album cover",
+        "attribute": "album-cover-border-radius",
+        "attrType": "rics",
+        "default": "1.25rem"
+    }
+}

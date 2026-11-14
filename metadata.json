@@ -1,0 +1,12 @@
+{
+    "id": "yttv-lyrics",
+    "title": "YT TV Lyrics",
+    "description": "Full-screen YouTube TV look for YouTube Music: big bold left-aligned lyrics, pure dark canvas, transparent chrome and a red progress bar.",
+    "creators": ["Gnade"],
+    "minVersion": "2.0.5.6",
+    "hasShaders": false,
+    "hasSettings": true,
+    "version": "1.0.0",
+    "tags": ["youtube-tv", "ytm", "fullscreen", "dark", "bold"],
+    "images": []
+}

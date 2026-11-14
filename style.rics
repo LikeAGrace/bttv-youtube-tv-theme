@@ -1,0 +1,141 @@
+/* YT TV Lyrics - YouTube TV styled lyrics for Better Lyrics */
+$placement: left; // left | right
+$accent: #ff0033;
+$album-cover-border-radius: 1.25rem;
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap");
+
+:root {
+    --yttv-bg: #0f0f0f;
+    --yttv-h-padding: 6vw;
+
+    --blyrics-font-size: 3.4rem;
+    --blyrics-line-height: 1.2;
+    --blyrics-padding: 1.4rem;
+    --blyrics-lyric-active-color: #fff;
+    --blyrics-lyric-inactive-color: #fff;
+    --blyrics-fullscreen-video-panel-size: 40%;
+}
+
+ytmusic-app,
+ytmusic-player-page,
+.blyrics-container,
+.blyrics-container * {
+    font-family: "YouTube Sans", Roboto, "Noto Sans", system-ui, sans-serif !important;
+}
+
+/* ---------- Lyrics: bold, left aligned, focus on the current line ---------- */
+.blyrics-container {
+    font-weight: 800;
+    text-align: left;
+    letter-spacing: -0.01em;
+
+    &[data-sync="synced"],
+    &[data-sync="richsync"] {
+        --current-lyric-visibility: 1;
+        --previous-lyrics-visibility: 0.28;
+        --next-lyrics-visibility: 0.42;
+    }
+
+    .blyrics--line {
+        transform-origin: left center;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+    }
+
+    // Inactive lines fade softly instead of vanishing (TV caption feel)
+    &:not(.blyrics-user-scrolling) .blyrics--line:not(.blyrics--active) {
+        transition: opacity 0.3s ease, transform var(--blyrics-lyric-scroll-duration, 0.4s) var(--blyrics-lyric-scroll-timing-function, ease);
+    }
+
+    .blyrics--word:after {
+        text-shadow: none;
+    }
+}
+
+/* ---------- Full-screen player ---------- */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) {
+    --blyrics-font-size: 5.2rem;
+    --blyrics-padding: 2.4rem;
+    background: var(--yttv-bg);
+
+    .content.ytmusic-player-page {
+        flex-direction: if($placement == left, row, row-reverse);
+        padding: 0 var(--yttv-h-padding);
+        gap: 4vw;
+    }
+
+    #side-panel {
+        height: 92vh;
+    }
+
+    // Album art: big rounded card with TV-style drop shadow
+    #player.ytmusic-player-page,
+    .song-media-controls.ytmusic-player {
+        border-radius: $album-cover-border-radius;
+        overflow: hidden;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+    }
+
+    // Track title / artist
+    #blyrics-song-info > p {
+        font-size: 2.2rem !important;
+        font-weight: 700;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    // No lyrics: slide art to the centre and hide the side panel
+    &:has(.blyrics-container[data-no-lyrics="true"]) {
+        #side-panel {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        #main-panel {
+            @if $placement == left {
+                transform: translateX(calc(50vw - 50% - var(--yttv-h-padding)));
+            } @else {
+                transform: translateX(calc(-50vw + 50% + var(--yttv-h-padding)));
+            }
+        }
+    }
+}
+
+/* ---------- Transparent chrome ---------- */
+#layout {
+    ytmusic-player-bar,
+    #player-bar-background,
+    #mini-guide-background,
+    #nav-bar-background {
+        background: transparent !important;
+    }
+    #nav-bar-background {
+        backdrop-filter: blur(1rem);
+    }
+}
+
+ytmusic-app[is-bauhaus-sidenav-enabled] #guide-wrapper.ytmusic-app {
+    background: transparent;
+}
+
+/* ---------- Red progress bar, TV style ---------- */
+ytmusic-player-bar {
+    --paper-slider-active-color: $accent;
+    --paper-slider-knob-color: $accent;
+    --paper-slider-knob-start-color: $accent;
+    --paper-slider-pin-color: $accent;
+    --paper-slider-secondary-color: rgba(255, 255, 255, 0.3);
+    --paper-slider-container-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ---------- Footer cards ---------- */
+.blyrics-footer__container,
+.blyrics-footer__discord,
+.blyrics-footer__container.blyrics-footer__unison-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    padding: 1rem 2rem;
+    transition: background-color 0.15s;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.16);
+    }
+}
