@@ -1,5 +1,5 @@
 /* YT TV Lyrics - YouTube TV styled lyrics for Better Lyrics */
-$placement: left; // left | right
+$placement: right; // left | right
 $accent: #ff0033;
 $album-cover-border-radius: 1.25rem;
 
@@ -7,13 +7,18 @@ $album-cover-border-radius: 1.25rem;
 
 :root {
     --yttv-bg: #0f0f0f;
-    --yttv-h-padding: 6vw;
+    --yttv-h-padding: 7vw;
+    --yttv-v-padding: 8vh;
+    --ytmusic-player-page-horizontal-padding: 7vw;
+    --ytmusic-player-page-vertical-padding: 8vh;
 
-    --blyrics-font-size: 3.4rem;
+    --blyrics-font-size: 4.2rem;
     --blyrics-line-height: 1.2;
     --blyrics-padding: 1.4rem;
     --blyrics-lyric-active-color: #fff;
-    --blyrics-lyric-inactive-color: #fff;
+    --blyrics-lyric-inactive-color: rgba(255, 255, 255, 0.32);
+    --blyrics-active-opacity: 1;
+    --blyrics-inactive-opacity: 0.32;
     --blyrics-fullscreen-video-panel-size: 40%;
 }
 
@@ -30,21 +35,9 @@ ytmusic-player-page,
     text-align: left;
     letter-spacing: -0.01em;
 
-    &[data-sync="synced"],
-    &[data-sync="richsync"] {
-        --current-lyric-visibility: 1;
-        --previous-lyrics-visibility: 0.28;
-        --next-lyrics-visibility: 0.42;
-    }
-
     .blyrics--line {
         transform-origin: left center;
         text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
-    }
-
-    // Inactive lines fade softly instead of vanishing (TV caption feel)
-    &:not(.blyrics-user-scrolling) .blyrics--line:not(.blyrics--active) {
-        transition: opacity 0.3s ease, transform var(--blyrics-lyric-scroll-duration, 0.4s) var(--blyrics-lyric-scroll-timing-function, ease);
     }
 
     .blyrics--word:after {
@@ -54,18 +47,52 @@ ytmusic-player-page,
 
 /* ---------- Full-screen player ---------- */
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) {
-    --blyrics-font-size: 5.2rem;
-    --blyrics-padding: 2.4rem;
+    --blyrics-font-size: 6.6rem;
+    --blyrics-padding: 2.8rem;
     background: var(--yttv-bg);
 
     .content.ytmusic-player-page {
         flex-direction: if($placement == left, row, row-reverse);
-        padding: 0 var(--yttv-h-padding);
-        gap: 4vw;
+        padding: 0 var(--yttv-h-padding) !important;
+        box-sizing: border-box !important;
+        gap: 8vw;
     }
 
+    // Keep lyrics clear of the top and bottom edges: the scroller itself gets the margin
     #side-panel {
-        height: 92vh;
+        box-sizing: border-box;
+        padding: var(--yttv-v-padding) 0 !important;
+    }
+
+    #tab-renderer[page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"] {
+        height: 100% !important;
+        max-height: calc(100vh - 2 * var(--yttv-v-padding) - var(--ytmusic-nav-bar-height, 64px)) !important;
+        mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent) !important;
+        -webkit-mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent) !important;
+    }
+
+    #main-panel {
+        padding: var(--yttv-v-padding) 0 !important;
+        box-sizing: border-box;
+    }
+
+    // Set the size on the container itself so nothing inherited can beat it
+    .blyrics-container {
+        --blyrics-font-size: 6.6rem !important;
+        --blyrics-line-height: 1.15;
+
+        // Full screen only: hide lines that were already sung (synced lyrics, auto-scroll on)
+        &:not(.blyrics-user-scrolling):not([data-sync="none"]) .blyrics--line:not(.blyrics--active):not(.blyrics--active ~ .blyrics--line) {
+            opacity: 0 !important;
+            transition: transform var(--blyrics-lyric-scroll-duration) var(--blyrics-lyric-scroll-timing-function),
+                        opacity 0.2s 0.4s;
+        }
+    }
+
+    // Bigger cover
+    #player.ytmusic-player-page {
+        width: min(24vw, 44vh) !important;
+        max-width: none !important;
     }
 
     // Album art: big rounded card with TV-style drop shadow
@@ -97,6 +124,13 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) {
             }
         }
     }
+}
+
+/* ---------- Hide the buttons / progress under the cover ---------- */
+#blyrics-fs-controls,
+.blyrics-fs-info-actions,
+ytmusic-player-page[player-fullscreened] .blyrics-fs-disc ~ #blyrics-fs-controls {
+    display: none !important;
 }
 
 /* ---------- Transparent chrome ---------- */
